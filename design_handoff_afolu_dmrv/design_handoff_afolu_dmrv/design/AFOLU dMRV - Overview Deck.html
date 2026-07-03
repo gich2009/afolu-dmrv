@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Verst Carbon · AFOLU dMRV — Platform Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  deck-stage:not(:defined) { visibility: hidden; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #050806; }
+  :root {
+    --bg: #0a110d; --bg2: #0e1713; --bg3: #131f19;
+    --line: rgba(255,255,255,.09); --line2: rgba(255,255,255,.16);
+    --t1: #e8f0ea; --t2: #9bb0a4; --t3: #66796d;
+    --brand: #1fa94f; --brand2: #2d7a4f; --deep: #143d29;
+    --teal: #2fd0bb; --gold: #e0a93b; --warn: #f0a92c; --ai: #9b7cf0; --danger: #ef5b5b;
+    --ui: 'IBM Plex Sans', system-ui, sans-serif; --mono: 'IBM Plex Mono', monospace;
+  }
+  deck-stage { position: fixed; inset: 0; }
+  section {
+    font-family: var(--ui); color: var(--t1);
+    background:
+      radial-gradient(120% 90% at 88% -10%, rgba(31,169,79,.10), transparent 55%),
+      radial-gradient(90% 70% at -10% 110%, rgba(47,208,187,.07), transparent 55%),
+      var(--bg);
+    padding: 96px 110px; display: flex; flex-direction: column;
+  }
+  .mono { font-family: var(--mono); }
+  .kicker { font-family: var(--mono); font-size: 22px; letter-spacing: .22em; text-transform: uppercase; color: var(--brand); font-weight: 600; }
+  .h1 { font-size: 88px; font-weight: 700; line-height: 1.02; letter-spacing: -.02em; margin: 0; }
+  .h2 { font-size: 56px; font-weight: 700; line-height: 1.06; letter-spacing: -.015em; margin: 0; }
+  .lead { font-size: 30px; line-height: 1.5; color: var(--t2); font-weight: 300; }
+  .slide-head { display: flex; flex-direction: column; gap: 14px; margin-bottom: 44px; }
+  .slide-head .h2 { max-width: 1400px; }
+  .num { font-family: var(--mono); }
+  .panel { background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; }
+  .hr { height: 1px; background: var(--line); border: 0; }
+  .pagefoot { position: absolute; left: 110px; right: 110px; bottom: 44px; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 18px; color: var(--t3); }
+  .chip { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px; border-radius: 999px; border: 1px solid var(--line2); font-size: 22px; color: var(--t2); }
+  .dotg { width: 12px; height: 12px; border-radius: 50%; background: var(--brand); }
+
+  /* app window frame for screenshots */
+  .win { border: 1px solid var(--line2); border-radius: 16px; overflow: hidden; background: #0b1410; box-shadow: 0 40px 90px -30px rgba(0,0,0,.8); }
+  .winbar { display: flex; align-items: center; gap: 9px; padding: 14px 18px; background: #0e1713; border-bottom: 1px solid var(--line); }
+  .winbar i { width: 13px; height: 13px; border-radius: 50%; background: #2a3a30; display: inline-block; }
+  .winbar .u { margin-left: 16px; font-family: var(--mono); font-size: 17px; color: var(--t3); }
+  .win img { display: block; width: 100%; }
+
+  .feat { display: flex; gap: 16px; align-items: flex-start; }
+  .feat .n { font-family: var(--mono); font-size: 20px; color: var(--brand); border: 1px solid var(--line2); border-radius: 9px; width: 40px; height: 40px; display: grid; place-items: center; flex-shrink: 0; font-weight: 600; }
+  .feat .ft { font-size: 25px; font-weight: 600; }
+  .feat .fb { font-size: 20px; color: var(--t2); line-height: 1.45; margin-top: 3px; }
+
+  /* data-flow stages */
+  .dfstage { flex: 1; background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 24px 18px; display: flex; flex-direction: column; gap: 11px; }
+  .dfn { font-family: var(--mono); font-size: 17px; color: var(--t3); font-weight: 600; }
+  .dft { font-size: 25px; font-weight: 700; }
+  .dfb { font-size: 18px; color: var(--t2); line-height: 1.4; flex: 1; }
+  .dfo { font-family: var(--mono); font-size: 15px; color: var(--t3); border-top: 1px solid var(--line); padding-top: 12px; }
+  .dfarr { display: flex; align-items: center; color: var(--t3); font-size: 26px; padding: 0 7px; }
+
+  /* monitoring cycle */
+  .cyc { background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 26px 18px; display: flex; flex-direction: column; gap: 13px; }
+  .cycn { width: 44px; height: 44px; border-radius: 11px; border: 1px solid var(--line2); display: grid; place-items: center; font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--brand); }
+  .cyct { font-size: 25px; font-weight: 700; }
+  .cycb { font-size: 18px; color: var(--t2); line-height: 1.45; }
+
+  /* roadmap list */
+  .rl { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 15px; }
+  .rl li { font-size: 22px; color: var(--t2); line-height: 1.4; padding-left: 30px; position: relative; }
+  .rl li::before { content: '→'; position: absolute; left: 0; color: var(--brand); }
+
+  /* path to production */
+  .pp { background: var(--bg2); border: 1px solid var(--line); border-radius: 16px; padding: 34px 32px; display: flex; flex-direction: column; gap: 12px; }
+  .ppn { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--teal); }
+  .ppt { font-size: 28px; font-weight: 700; }
+  .ppb { font-size: 20px; color: var(--t2); line-height: 1.5; }
+
+  /* next steps */
+  .ns { display: flex; gap: 20px; align-items: flex-start; font-size: 24px; color: var(--t2); line-height: 1.45; }
+  .ns b { color: var(--t1); font-weight: 700; }
+  .nsn { flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%; background: var(--deep); color: var(--brand); border: 1px solid rgba(31,169,79,.4); display: grid; place-items: center; font-family: var(--mono); font-size: 24px; font-weight: 700; }
+  .nst { display: inline-block; margin-top: 6px; font-family: var(--mono); font-size: 17px; color: var(--gold); }
+
+  /* entrance */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-deck-active] .anim { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
+    [data-deck-active] .anim2 { animation: rise .6s .08s cubic-bezier(.2,.7,.2,1) both; }
+    [data-deck-active] .anim3 { animation: rise .6s .16s cubic-bezier(.2,.7,.2,1) both; }
+    @keyframes rise { from { transform: translateY(20px); } to { transform: none; } }
+  }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<rect width="100" height="100" fill="#0a110d"/>
+<rect x="22" y="30" width="56" height="40" rx="4" fill="none" stroke="#1fa94f" stroke-width="3"/>
+<path d="M30 60 L42 48 L52 56 L70 38" fill="none" stroke="#2fd0bb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="70" cy="38" r="4" fill="#e0a93b"/>
+</svg>
+</template>
+<deck-stage width="1920" height="1080">
+
+  <!-- 1 · TITLE -->
+  <section data-label="Title" style="justify-content:center;">
+    <img class="anim" src="assets/verst-logo-dark.png" alt="Verst Carbon" style="height:64px;width:auto;object-fit:contain;object-position:left;margin-bottom:60px;" />
+    <div class="kicker anim">Concept → Platform · June 2026</div>
+    <h1 class="h1 anim2" style="margin-top:18px;max-width:1500px;">The AFOLU dMRV<br/>Platform</h1>
+    <p class="lead anim3" style="margin-top:26px;max-width:1100px;">A satellite-first, AI-assisted digital MRV system purpose-built for African Agriculture, Forestry &amp; Other Land-Use carbon projects.</p>
+    <div class="anim3" style="display:flex;gap:14px;margin-top:46px;">
+      <span class="chip"><span class="dotg"></span> Measurement</span>
+      <span class="chip"><span class="dotg" style="background:var(--teal)"></span> Carbon Accounting</span>
+      <span class="chip"><span class="dotg" style="background:var(--gold)"></span> Compliance</span>
+    </div>
+    <div class="pagefoot"><span>Verst Carbon</span><span>Prepared by Kevin Kiptoo</span></div>
+  </section>
+
+  <!-- 2 · PROBLEM -->
+  <section data-label="The opportunity">
+    <div class="slide-head">
+      <div class="kicker anim">The opportunity &amp; the gap</div>
+      <h2 class="h2 anim">Africa holds the carbon. Conventional MRV can't reach it.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;" class="anim2">
+      <div class="panel" style="padding:38px;">
+        <div class="num" style="font-size:64px;font-weight:600;color:var(--brand);">2.5–4<span style="font-size:30px;color:var(--t3);"> GtCO₂e/yr</span></div>
+        <div style="font-size:23px;color:var(--t2);margin-top:14px;line-height:1.45;">Africa's nature-based solution potential by 2030 — yet under 5% is monetised today.</div>
+      </div>
+      <div class="panel" style="padding:38px;">
+        <div class="num" style="font-size:64px;font-weight:600;color:var(--gold);">&lt;10<span style="font-size:30px;color:var(--t3);"> %</span></div>
+        <div style="font-size:23px;color:var(--t2);margin-top:14px;line-height:1.45;">of voluntary carbon supply comes from Africa — despite 30%+ of the world's tropical forest.</div>
+      </div>
+      <div class="panel" style="padding:38px;">
+        <div class="num" style="font-size:64px;font-weight:600;color:var(--teal);">±25–40<span style="font-size:30px;color:var(--t3);"> %</span></div>
+        <div style="font-size:23px;color:var(--t2);margin-top:14px;line-height:1.45;">Typical uncertainty from global biomass models in heterogeneous smallholder landscapes.</div>
+      </div>
+    </div>
+    <p class="lead anim3" style="margin-top:40px;max-width:1500px;">Field-centric MRV is <b style="color:var(--t1);font-weight:600;">too costly, too slow, and too inaccurate</b> for fragmented African landscapes. The reliability of MRV is now the single greatest determinant of project credibility and commercial viability.</p>
+    <div class="pagefoot"><span>The opportunity</span><span class="num">02</span></div>
+  </section>
+
+  <!-- 3 · THREE ENGINES -->
+  <section data-label="Three engines">
+    <div class="slide-head">
+      <div class="kicker anim">Platform architecture</div>
+      <h2 class="h2 anim">One platform. Three engines. Three questions.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;flex:1;" class="anim2">
+      <div class="panel" style="padding:40px;display:flex;flex-direction:column;border-top:4px solid var(--brand);">
+        <div class="mono" style="font-size:20px;color:var(--brand);">01 · MEASUREMENT</div>
+        <div style="font-size:34px;font-weight:700;margin:16px 0 8px;">"What is the carbon?"</div>
+        <div style="font-size:22px;color:var(--t2);line-height:1.5;">Multi-source EO + field-calibrated ML biomass models. GEDI LiDAR, Sentinel-1/2, allometric calibration.</div>
+        <div class="mono" style="margin-top:auto;padding-top:26px;font-size:18px;color:var(--t3);">→ tCO₂e/pixel · uncertainty · change</div>
+      </div>
+      <div class="panel" style="padding:40px;display:flex;flex-direction:column;border-top:4px solid var(--teal);">
+        <div class="mono" style="font-size:20px;color:var(--teal);">02 · CARBON ACCOUNTING</div>
+        <div style="font-size:34px;font-weight:700;margin:16px 0 8px;">"What can be claimed?"</div>
+        <div style="font-size:22px;color:var(--t2);line-height:1.5;">Codified VM0048 &amp; multi-methodology logic: dynamic baseline, leakage, additionality, credit forecast.</div>
+        <div class="mono" style="margin-top:auto;padding-top:26px;font-size:18px;color:var(--t3);">→ baseline · net additionality · forecast</div>
+      </div>
+      <div class="panel" style="padding:40px;display:flex;flex-direction:column;border-top:4px solid var(--gold);">
+        <div class="mono" style="font-size:20px;color:var(--gold);">03 · COMPLIANCE</div>
+        <div style="font-size:34px;font-weight:700;margin:16px 0 8px;">"Will it pass VVB review?"</div>
+        <div style="font-size:22px;color:var(--t2);line-height:1.5;">AI-assisted additionality &amp; permanence, FPIC, risk scoring, VVB dossier and AI PDD generation.</div>
+        <div class="mono" style="margin-top:auto;padding-top:26px;font-size:18px;color:var(--t3);">→ evidence · risk · dossier · PDD</div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Architecture</span><span class="num">03</span></div>
+  </section>
+
+  <!-- 4 · DATA FLOW -->
+  <section data-label="Data flow">
+    <div class="slide-head">
+      <div class="kicker anim">End-to-end</div>
+      <h2 class="h2 anim">From raw satellite pixels to a VVB-ready dossier</h2>
+    </div>
+    <div class="anim2" style="display:flex;align-items:stretch;gap:0;flex:1;max-height:540px;">
+      <!-- 7 stages -->
+      <div style="display:flex;align-items:center;width:100%;gap:0;">
+        <!-- stage template repeated -->
+        <div class="dfstage"><div class="dfn">01</div><div class="dft">Ingest</div><div class="dfb">Sentinel-2/1, GEDI, Planet, EarthRanger &amp; Earth Map via GEE + APIs.</div><div class="dfo">raw rasters + events</div></div>
+        <div class="dfarr">→</div>
+        <div class="dfstage"><div class="dfn">02</div><div class="dft">Preprocess</div><div class="dfb">Cloud-mask, reproject &amp; time-series normalise.</div><div class="dfo">analysis-ready stacks</div></div>
+        <div class="dfarr">→</div>
+        <div class="dfstage" style="border-color:rgba(31,169,79,.4);"><div class="dfn" style="color:var(--brand)">03</div><div class="dft">EO Engine</div><div class="dfb">Site-specific ML estimates AGBD @ 10 m.</div><div class="dfo">tCO₂e/pixel + UQ</div></div>
+        <div class="dfarr">→</div>
+        <div class="dfstage" style="border-color:rgba(47,208,187,.4);"><div class="dfn" style="color:var(--teal)">04</div><div class="dft">MRV Hybrid</div><div class="dfb">Field plots calibrate EO via regression.</div><div class="dfo">validated dataset ★</div></div>
+        <div class="dfarr">→</div>
+        <div class="dfstage"><div class="dfn">05</div><div class="dft">Accounting</div><div class="dfb">VM0048 logic: baseline, leakage, additionality.</div><div class="dfo">credit forecast</div></div>
+        <div class="dfarr">→</div>
+        <div class="dfstage"><div class="dfn">06</div><div class="dft">Compliance</div><div class="dfb">Gap scan, risk score, FPIC, sign-off queue.</div><div class="dfo">risk dashboard</div></div>
+        <div class="dfarr">→</div>
+        <div class="dfstage" style="border-color:rgba(224,169,59,.4);"><div class="dfn" style="color:var(--gold)">07</div><div class="dft">Output</div><div class="dfb">Dossier + AI PDD draft + monitoring report.</div><div class="dfo">VVB-ready package</div></div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Data flow</span><span class="num">04</span></div>
+  </section>
+
+  <!-- 5 · PORTFOLIO -->
+  <section data-label="Screen · Portfolio">
+    <div class="slide-head" style="margin-bottom:28px;"><div class="kicker anim">Platform · Overview</div><h2 class="h2 anim">Portfolio command centre</h2></div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:52px;flex:1;align-items:center;">
+      <div class="win anim2"><div class="winbar"><i></i><i></i><i></i><span class="u">verst.earth/dmrv · portfolio</span></div><img src="assets/shots/portfolio.png" alt="Portfolio view" /></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:30px;">
+        <p class="lead" style="font-size:27px;">Every enrolled AFOLU project, scored and mapped, in one place.</p>
+        <div class="feat"><div class="n">↗</div><div><div class="ft">Portfolio KPIs</div><div class="fb">Area under MRV, carbon stock, annual forecast &amp; buffer pool at a glance.</div></div></div>
+        <div class="feat"><div class="n">◎</div><div><div class="ft">Live regional map</div><div class="fb">Hover any project to preview its boundary &amp; biomass.</div></div></div>
+        <div class="feat"><div class="n">▦</div><div><div class="ft">Risk &amp; uncertainty</div><div class="fb">Stage, ±CI and risk band surfaced per project row.</div></div></div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Screen · Portfolio</span><span class="num">05</span></div>
+  </section>
+
+  <!-- 6 · PROJECT DASHBOARD -->
+  <section data-label="Screen · Project">
+    <div class="slide-head" style="margin-bottom:28px;"><div class="kicker anim">Platform · Overview</div><h2 class="h2 anim">Project dashboard — map as the hero</h2></div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:52px;flex:1;align-items:center;">
+      <div class="win anim2"><div class="winbar"><i></i><i></i><i></i><span class="u">verst.earth/dmrv · tsavo-east</span></div><img src="assets/shots/project.png" alt="Project dashboard" /></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:30px;">
+        <p class="lead" style="font-size:27px;">A full geospatial canvas with the carbon picture beside it.</p>
+        <div class="feat"><div class="n">◍</div><div><div class="ft">AGBD biomass map</div><div class="fb">Project boundary, 10&nbsp;km leakage belt &amp; control plots overlaid.</div></div></div>
+        <div class="feat"><div class="n">◑</div><div><div class="ft">Four carbon pools</div><div class="fb">AGB, BGB, SOC, dead wood — with uncertainty &amp; risk gauges.</div></div></div>
+        <div class="feat"><div class="n">∿</div><div><div class="ft">Baseline vs. project</div><div class="fb">Dynamic baseline tracked against the live project trajectory.</div></div></div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Screen · Project</span><span class="num">06</span></div>
+  </section>
+
+  <!-- 7 · MEASUREMENT -->
+  <section data-label="Screen · Measurement">
+    <div class="slide-head" style="margin-bottom:28px;"><div class="kicker anim" style="color:var(--brand)">Engine 01 · Measurement</div><h2 class="h2 anim">Measurement Engine</h2></div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:52px;flex:1;align-items:center;">
+      <div class="win anim2"><div class="winbar"><i></i><i></i><i></i><span class="u">verst.earth/dmrv · measurement</span></div><img src="assets/shots/measurement.png" alt="Measurement Engine" /></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:30px;">
+        <p class="lead" style="font-size:27px;">"What is the carbon?" — answered at 10&nbsp;m, with honest uncertainty.</p>
+        <div class="feat"><div class="n">⊞</div><div><div class="ft">Switchable layers</div><div class="fb">AGBD, change, forest-cover &amp; terrain over the same canvas.</div></div></div>
+        <div class="feat"><div class="n">±</div><div><div class="ft">Bayesian 95% CI</div><div class="fb">Formal uncertainty per pixel — no black boxes for the VVB.</div></div></div>
+        <div class="feat"><div class="n">⊕</div><div><div class="ft">Hybrid calibration</div><div class="fb">EO calibrated to field plots — R²&nbsp;0.86, the core differentiator.</div></div></div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Screen · Measurement</span><span class="num">07</span></div>
+  </section>
+
+  <!-- 8 · ACCOUNTING -->
+  <section data-label="Screen · Accounting">
+    <div class="slide-head" style="margin-bottom:28px;"><div class="kicker anim" style="color:var(--teal)">Engine 02 · Carbon Accounting</div><h2 class="h2 anim">Codified, multi-methodology accounting</h2></div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:52px;flex:1;align-items:center;">
+      <div class="win anim2"><div class="winbar"><i></i><i></i><i></i><span class="u">verst.earth/dmrv · accounting</span></div><img src="assets/shots/accounting.png" alt="Carbon Accounting Engine" /></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:30px;">
+        <p class="lead" style="font-size:27px;">VM0048 anchors Phase&nbsp;1 — a dropdown extends to more standards.</p>
+        <div class="feat"><div class="n">≣</div><div><div class="ft">Methodology switch</div><div class="fb">VM0048 → VM0047 / VM0042 / VM0007 / VM0033, ART TREES, Gold Standard.</div></div></div>
+        <div class="feat"><div class="n">∿</div><div><div class="ft">Dynamic baseline</div><div class="fb">Refreshed each cycle from control plots, not a static projection.</div></div></div>
+        <div class="feat"><div class="n">▾</div><div><div class="ft">Conservative issuance</div><div class="fb">Lower bound of the 90% CI used for credits (VM0048 §5.3).</div></div></div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Screen · Accounting</span><span class="num">08</span></div>
+  </section>
+
+  <!-- 9 · COMPLIANCE -->
+  <section data-label="Screen · Compliance">
+    <div class="slide-head" style="margin-bottom:28px;"><div class="kicker anim" style="color:var(--gold)">Engine 03 · Compliance</div><h2 class="h2 anim">Compliance Engine</h2></div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:52px;flex:1;align-items:center;">
+      <div class="win anim2"><div class="winbar"><i></i><i></i><i></i><span class="u">verst.earth/dmrv · compliance</span></div><img src="assets/shots/compliance.png" alt="Compliance Engine" /></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:30px;">
+        <p class="lead" style="font-size:27px;">"Will it pass VVB review?" — assembled, scored &amp; queued for sign-off.</p>
+        <div class="feat"><div class="n">⛨</div><div><div class="ft">Risk dashboard</div><div class="fb">Permanence, reversal, leakage &amp; fire continuously scored.</div></div></div>
+        <div class="feat"><div class="n">✓</div><div><div class="ft">AI sign-off queue</div><div class="fb">Gaps flagged with methodology citation &amp; human sign-off.</div></div></div>
+        <div class="feat"><div class="n">✦</div><div><div class="ft">Dossier + AI PDD</div><div class="fb">VVB-ready package &amp; auto-drafted PDD — months to days.</div></div></div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Screen · Compliance</span><span class="num">09</span></div>
+  </section>
+
+  <!-- 10 · PIPELINE -->
+  <section data-label="Screen · Pipeline">
+    <div class="slide-head" style="margin-bottom:28px;"><div class="kicker anim">Operations · Data</div><h2 class="h2 anim">A pipeline with no vendor lock-in</h2></div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:52px;flex:1;align-items:center;">
+      <div class="win anim2"><div class="winbar"><i></i><i></i><i></i><span class="u">verst.earth/dmrv · pipeline</span></div><img src="assets/shots/pipeline.png" alt="Data pipeline" /></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:30px;">
+        <p class="lead" style="font-size:27px;">12 datasets through Google Earth Engine — mostly free &amp; open.</p>
+        <div class="feat"><div class="n">⛁</div><div><div class="ft">GEE ingestion</div><div class="fb">Sentinel, Landsat, GEDI, Hansen, iSDAsoil, CHIRPS &amp; more.</div></div></div>
+        <div class="feat"><div class="n">⤳</div><div><div class="ft">Inference router</div><div class="fb">Space Intelligence API → Lang/Chloris fallback via one config switch.</div></div></div>
+        <div class="feat"><div class="n">$</div><div><div class="ft">Lean economics</div><div class="fb">Free EO tier covers the MVP; commercial sources reserved for high-value sites.</div></div></div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Screen · Pipeline</span><span class="num">10</span></div>
+  </section>
+
+  <!-- 11 · FIELD -->
+  <section data-label="Screen · Field">
+    <div class="slide-head" style="margin-bottom:28px;"><div class="kicker anim">Operations · Field</div><h2 class="h2 anim">Offline-first field collection</h2></div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:52px;flex:1;align-items:center;">
+      <div class="win anim2"><div class="winbar"><i></i><i></i><i></i><span class="u">verst.earth/dmrv · field</span></div><img src="assets/shots/field.png" alt="Field data collection" /></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:30px;">
+        <p class="lead" style="font-size:27px;">Built for connectivity-constrained smallholder landscapes.</p>
+        <div class="feat"><div class="n">▢</div><div><div class="ft">Works offline</div><div class="fb">KoboCollect / Survey123 forms sync when coverage returns.</div></div></div>
+        <div class="feat"><div class="n">⊹</div><div><div class="ft">GNSS-tagged plots</div><div class="fb">DBH, height, SOC cores &amp; bioacoustics tied to coordinates.</div></div></div>
+        <div class="feat"><div class="n">⟲</div><div><div class="ft">Sync &amp; QA queue</div><div class="fb">Enumerator submissions tracked to the validated dataset.</div></div></div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Screen · Field</span><span class="num">11</span></div>
+  </section>
+
+  <!-- 11b · BIODIVERSITY -->
+  <section data-label="Screen · Biodiversity">
+    <div class="slide-head" style="margin-bottom:28px;"><div class="kicker anim">Engines · Co-benefits</div><h2 class="h2 anim">Biodiversity &amp; co-benefits — beyond carbon</h2></div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:52px;flex:1;align-items:center;">
+      <div class="win anim2"><div class="winbar"><i></i><i></i><i></i><span class="u">verst.earth/dmrv · biodiversity</span></div><img src="assets/shots/biodiversity.png" alt="Biodiversity &amp; co-benefits" /></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:30px;">
+        <p class="lead" style="font-size:27px;">Wildlife &amp; habitat data that turns carbon credits into premium, co-benefit-labelled credits.</p>
+        <div class="feat"><div class="n">◉</div><div><div class="ft">EarthRanger integration</div><div class="fb">Collar tracks, sightings, snares &amp; human-wildlife conflict — observations &amp; events on the map in real time.</div></div></div>
+        <div class="feat"><div class="n">⚘</div><div><div class="ft">Earth Map / FAO layers</div><div class="fb">Land productivity, degradation (SDG&nbsp;15.3.1) &amp; biodiversity intactness — non-GEE value-added data.</div></div></div>
+        <div class="feat"><div class="n">✦</div><div><div class="ft">Co-benefit claims</div><div class="fb">Indicator-species trends evidence CCB / SD&nbsp;VISta labels &amp; SDG reporting.</div></div></div>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Screen · Biodiversity</span><span class="num">12</span></div>
+  </section>
+
+  <!-- 12 · MONITORING CYCLE -->
+  <section data-label="Monitoring cycle">
+    <div class="slide-head"><div class="kicker anim">In practice</div><h2 class="h2 anim">An annual monitoring cycle — in days, not weeks</h2></div>
+    <div class="anim2" style="display:grid;grid-template-columns:repeat(7,1fr);gap:18px;flex:1;max-height:560px;">
+      <div class="cyc"><div class="cycn">1</div><div class="cyct">Ingest</div><div class="cycb">New S2/S1 acquisitions pulled via GEE.</div></div>
+      <div class="cyc"><div class="cycn">2</div><div class="cyct">Measure</div><div class="cycb">AGBD re-estimated at 10&nbsp;m with 95% CI.</div></div>
+      <div class="cyc"><div class="cycn">3</div><div class="cyct">Detect</div><div class="cycb">Change &gt;2σ flagged for field check.</div></div>
+      <div class="cyc"><div class="cycn">4</div><div class="cyct">Calibrate</div><div class="cycb">Field plots tighten the estimate.</div></div>
+      <div class="cyc"><div class="cycn">5</div><div class="cyct">Account</div><div class="cycb">Baseline, leakage &amp; forecast refreshed.</div></div>
+      <div class="cyc"><div class="cycn">6</div><div class="cyct">Comply</div><div class="cycb">Gaps &amp; risk scanned, queued for sign-off.</div></div>
+      <div class="cyc" style="border-color:rgba(31,169,79,.4);"><div class="cycn" style="background:var(--brand);color:#08130d;">7</div><div class="cyct">Report</div><div class="cycb">Dossier &amp; PDD draft — VVB-ready.</div></div>
+    </div>
+    <p class="lead anim3" style="margin-top:34px;">Use Case 2 from the concept note — a complete, audit-ready monitoring package at a fraction of conventional MRV cost.</p>
+    <div class="pagefoot"><span>Monitoring cycle</span><span class="num">12</span></div>
+  </section>
+
+  <!-- 13 · ROADMAP -->
+  <section data-label="Roadmap">
+    <div class="slide-head"><div class="kicker anim">Delivery</div><h2 class="h2 anim">Phased build · 30 months</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;flex:1;" class="anim2">
+      <div class="panel" style="padding:36px;display:flex;flex-direction:column;border-top:4px solid var(--brand);">
+        <div class="mono" style="font-size:19px;color:var(--brand);">PHASE 1 · MONTHS 1–9</div>
+        <div style="font-size:32px;font-weight:700;margin:10px 0 18px;">MVP — validate the loop</div>
+        <ul class="rl"><li>EO carbon engine on Google Earth Engine</li><li>VM0048 accounting codified &amp; automated</li><li>Credit forecast &amp; PDD draft export</li><li>Space Intelligence + Chloris fallback</li><li>One Kenya pilot, full pipeline</li></ul>
+      </div>
+      <div class="panel" style="padding:36px;display:flex;flex-direction:column;border-top:4px solid var(--teal);">
+        <div class="mono" style="font-size:19px;color:var(--teal);">PHASE 2 · MONTHS 9–18</div>
+        <div style="font-size:32px;font-weight:700;margin:10px 0 18px;">Hybrid MRV &amp; smallholders</div>
+        <ul class="rl"><li>EO × field calibration regression</li><li>Offline-first mobile field app</li><li>FPIC &amp; benefit-sharing modules</li><li>Second methodology (VM0047)</li><li>Multi-methodology abstraction layer</li></ul>
+      </div>
+      <div class="panel" style="padding:36px;display:flex;flex-direction:column;border-top:4px solid var(--gold);">
+        <div class="mono" style="font-size:19px;color:var(--gold);">PHASE 3 · MONTHS 18–30</div>
+        <div style="font-size:32px;font-weight:700;margin:10px 0 18px;">Compliance intelligence</div>
+        <ul class="rl"><li>AI additionality &amp; permanence + sign-off</li><li>Automated leakage-belt monitoring</li><li>Auto-generated PDD sections</li><li>Verification dossier builder</li><li>VVB trust layer &amp; export formats</li></ul>
+      </div>
+    </div>
+    <div class="pagefoot"><span>Roadmap</span><span class="num">13</span></div>
+  </section>
+
+  <!-- 14 · COSTS -->
+  <section data-label="Costs">
+    <div class="slide-head"><div class="kicker anim">Budget</div><h2 class="h2 anim">Infrastructure &amp; data costs</h2></div>
+    <div class="panel anim2" style="padding:8px 0;overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:24px;">
+        <thead><tr>
+          <th style="text-align:left;padding:20px 40px;color:var(--t3);font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase;">Cost category</th>
+          <th style="text-align:right;padding:20px 40px;color:var(--t3);font-weight:600;font-size:19px;text-transform:uppercase;">Phase 1</th>
+          <th style="text-align:right;padding:20px 40px;color:var(--t3);font-weight:600;font-size:19px;text-transform:uppercase;">Phase 2</th>
+          <th style="text-align:right;padding:20px 40px;color:var(--t3);font-weight:600;font-size:19px;text-transform:uppercase;">Phase 3</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:16px 40px;border-top:1px solid var(--line);">GCP infrastructure</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">~$3.8k</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">~$11k</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">~$35k</td></tr>
+          <tr><td style="padding:16px 40px;border-top:1px solid var(--line);">Google Earth Engine licence</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">$0*</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">~$24k</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">~$60k</td></tr>
+          <tr><td style="padding:16px 40px;border-top:1px solid var(--line);">Space Intelligence API</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">$7–25k</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">TBC</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">portfolio</td></tr>
+          <tr><td style="padding:16px 40px;border-top:1px solid var(--line);">Chloris (fallback) + VHR</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">$5k</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">$8–25k</td><td class="mono" style="text-align:right;padding:16px 40px;border-top:1px solid var(--line);color:var(--t2);">$25–70k</td></tr>
+          <tr><td style="padding:18px 40px;border-top:1px solid var(--line2);font-weight:700;">Indicative total</td><td class="mono" style="text-align:right;padding:18px 40px;border-top:1px solid var(--line2);color:var(--brand);font-weight:700;">~$28k</td><td class="mono" style="text-align:right;padding:18px 40px;border-top:1px solid var(--line2);color:var(--brand);font-weight:700;">~$81k</td><td class="mono" style="text-align:right;padding:18px 40px;border-top:1px solid var(--line2);color:var(--brand);font-weight:700;">~$195k</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lead anim3" style="margin-top:26px;font-size:24px;">*GEE free tier during R&amp;D. Excludes internal staff. <b style="color:var(--t1);font-weight:600;">Google for Startups</b> offers up to $100k credits/yr — potentially absorbing most of Phase 1–2 infra.</p>
+    <div class="pagefoot"><span>Budget</span><span class="num">14</span></div>
+  </section>
+
+  <!-- 15 · PATH TO PRODUCTION -->
+  <section data-label="Path to production">
+    <div class="slide-head"><div class="kicker anim" style="color:var(--teal)">From prototype to live</div><h2 class="h2 anim">What it takes to go live</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px;flex:1;" class="anim2">
+      <div class="pp"><div class="ppn">01</div><div class="ppt">Cloud &amp; EO infrastructure</div><div class="ppb">Provision GCP, GEE commercial licence, Cloud Run inference router, PostGIS + GCS data lake. Apply for Google for Startups credits.</div></div>
+      <div class="pp"><div class="ppn">02</div><div class="ppt">Data partnerships</div><div class="ppb">Contract Space Intelligence (HabitatMapper™/CarbonMapper™, VT0007) &amp; Chloris. Fallback pipeline runs from day one — no blocker.</div></div>
+      <div class="pp"><div class="ppn">03</div><div class="ppt">Engineering build</div><div class="ppb">React web + FastAPI services + Python VM0048 methodology engine; offline mobile app; ML biomass training &amp; inference.</div></div>
+      <div class="pp"><div class="ppn">04</div><div class="ppt">Pilot project</div><div class="ppb">Select one Kenya/Uganda ARR or REDD+ site with EO history &amp; field access; run the full loop; gather calibration plots.</div></div>
+      <div class="pp"><div class="ppn">05</div><div class="ppt">VVB &amp; registry</div><div class="ppb">Engage a VVB early on digital-MRV acceptability; design outputs to Verra/Gold Standard formats; set buffer pool.</div></div>
+      <div class="pp"><div class="ppn">06</div><div class="ppt">Team &amp; governance</div><div class="ppb">Carbon leads, geospatial/ML engineers, field enumerators + QA, compliance reviewer; audit trails &amp; version control throughout.</div></div>
+    </div>
+    <div class="pagefoot"><span>Path to production</span><span class="num">15</span></div>
+  </section>
+
+  <!-- 16 · NEXT STEPS -->
+  <section data-label="Next steps">
+    <div class="slide-head"><div class="kicker anim">Recommended actions</div><h2 class="h2 anim">Next steps to start Phase 1</h2></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px 56px;flex:1;align-content:center;" class="anim2">
+      <div class="ns"><span class="nsn">1</span><div><b>Lock Phase 1 scope</b> — VM0048 anchor, VVB-ready PDD as the success criterion; secure budget sign-off. <span class="nst">Immediate</span></div></div>
+      <div class="ns"><span class="nsn">2</span><div><b>Select the pilot</b> — one ARR/REDD+ site in Kenya or Uganda with EO history &amp; field team. <span class="nst">≤ 2 weeks</span></div></div>
+      <div class="ns"><span class="nsn">3</span><div><b>Provision GCP + GEE</b> — environments, IAM, begin the EO pipeline. <span class="nst">Weeks 2–4</span></div></div>
+      <div class="ns"><span class="nsn">4</span><div><b>Open data engagements</b> — Space Intelligence &amp; Chloris commercial terms (build proceeds on fallback meanwhile). <span class="nst">≤ 1 month</span></div></div>
+      <div class="ns"><span class="nsn">5</span><div><b>Design the field protocol</b> — KoboCollect forms, QA procedures, enumerator training. <span class="nst">≤ 1 month</span></div></div>
+      <div class="ns"><span class="nsn">6</span><div><b>Engage a VVB &amp; set go/no-go</b> — pre-submission guidance &amp; measurable Phase 2 trigger. <span class="nst">≤ 6 weeks</span></div></div>
+    </div>
+    <div class="pagefoot"><span>Next steps</span><span class="num">16</span></div>
+  </section>
+
+  <!-- 17 · CLOSING -->
+  <section data-label="Close" style="justify-content:center;">
+    <img class="anim" src="assets/verst-logo-dark.png" alt="Verst Carbon" style="height:52px;width:auto;object-fit:contain;object-position:left;margin-bottom:48px;" />
+    <h2 class="h2 anim2" style="font-size:72px;max-width:1400px;">Validate the core loop.<br/>Then scale.</h2>
+    <p class="lead anim3" style="margin-top:28px;max-width:1200px;">Field-calibrated, satellite-first hybrid MRV is Verst Carbon's primary technical differentiator — credits that are demonstrably more accurate, transparent and defensible than conventional MRV.</p>
+    <div class="pagefoot"><span>Verst Carbon · AFOLU dMRV</span><span>June 2026</span></div>
+  </section>
+
+</deck-stage>
+
+<script src="deck-stage.js"></script>
+</body>
+</html>

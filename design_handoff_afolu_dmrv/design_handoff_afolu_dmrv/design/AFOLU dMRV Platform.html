@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Verst Carbon · AFOLU dMRV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* type */
+    --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --fs: 14px;          /* base */
+    /* density */
+    --pad: 16px;
+    --gap: 14px;
+    --row: 38px;
+    --radius: 9px;
+    /* brand accent (tweakable) */
+    --brand: #1fa94f;
+    --brand-2: #2d7a4f;
+    --brand-deep: #143d29;
+    /* semantic */
+    --teal: #2fd0bb;
+    --gold: #e0a93b;
+    --warn: #f0a92c;
+    --danger: #ef5b5b;
+    --info: #5aa2f0;
+    --ai: #9b7cf0;
+  }
+  /* ---------- DARK (default) ---------- */
+  html[data-theme="dark"] {
+    --bg-0: #0a110d;
+    --bg-1: #0e1713;
+    --bg-2: #131f19;
+    --bg-3: #1a271f;
+    --hover: rgba(255,255,255,.04);
+    --line: rgba(255,255,255,.075);
+    --line-2: rgba(255,255,255,.14);
+    --text-1: #e8f0ea;
+    --text-2: #9bb0a4;
+    --text-3: #66796d;
+    --map-void: #07100b;
+    --shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 10px 30px -12px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+  /* ---------- LIGHT ---------- */
+  html[data-theme="light"] {
+    --bg-0: #eef1ec;
+    --bg-1: #ffffff;
+    --bg-2: #f7f9f5;
+    --bg-3: #eef2ea;
+    --hover: rgba(20,61,41,.04);
+    --line: rgba(20,40,28,.10);
+    --line-2: rgba(20,40,28,.18);
+    --text-1: #16221b;
+    --text-2: #4f6357;
+    --text-3: #82938a;
+    --map-void: #dfe6dd;
+    --shadow: 0 1px 2px rgba(20,40,28,.06), 0 12px 28px -14px rgba(20,40,28,.22);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: var(--font-ui);
+    font-size: var(--fs);
+    background: var(--bg-0);
+    color: var(--text-1);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden;
+  }
+  #root { height: 100vh; }
+  .mono { font-family: var(--font-mono); font-feature-settings: "tnum" 1; }
+  ::selection { background: color-mix(in srgb, var(--brand) 40%, transparent); }
+  /* scrollbars */
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  *::-webkit-scrollbar-thumb:hover { background: var(--text-3); background-clip: padding-box; }
+  *::-webkit-scrollbar-track { background: transparent; }
+
+  /* utility primitives shared across components */
+  .panel { background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .hair { height: 1px; background: var(--line); border: 0; margin: 0; }
+  .lbl { font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--text-3); font-weight: 600; }
+  .kpi-num { font-family: var(--font-mono); font-weight: 600; letter-spacing: -.01em; }
+  button { font-family: inherit; }
+  .clk { cursor: pointer; }
+
+  /* fade/scale entrance */
+  @keyframes vc-in { from { transform: translateY(7px); } to { transform: none; } }
+  .vc-in { animation: vc-in .34s cubic-bezier(.2,.7,.2,1) both; }
+
+  @media (prefers-reduced-motion: reduce) { .vc-in { animation: none; } }
+
+  /* buttons */
+  .vc-btn, .vc-btn-ghost {
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+    font-size: 12px; font-weight: 600; padding: 6px 11px; border-radius: 7px;
+    line-height: 1; white-space: nowrap; transition: background .12s, border-color .12s, color .12s;
+  }
+  .vc-btn { background: var(--brand); color: #08130d; border: 1px solid transparent; }
+  .vc-btn:hover { filter: brightness(1.08); }
+  .vc-btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--line); }
+  .vc-btn-ghost:hover { background: var(--hover); color: var(--text-1); border-color: var(--line-2); }
+  .vc-row { transition: background .1s; }
+  .vc-row:hover { background: var(--hover); }
+
+  /* nav */
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 11px; border-radius: 8px;
+    color: var(--text-2); cursor: pointer; font-size: 13px; font-weight: 500;
+    transition: background .12s, color .12s; position: relative; user-select: none;
+  }
+  .nav-item:hover { background: var(--hover); color: var(--text-1); }
+  .nav-item.active { background: color-mix(in srgb, var(--brand) 15%, transparent); color: var(--text-1); }
+  .nav-item.active::before { content: ''; position: absolute; left: -8px; top: 7px; bottom: 7px; width: 3px; border-radius: 3px; background: var(--brand); }
+
+  .topsearch { background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; color: var(--text-1); font-family: inherit; font-size: 13px; padding: 7px 10px 7px 32px; width: 100%; outline: none; }
+  .topsearch:focus { border-color: color-mix(in srgb, var(--brand) 50%, transparent); }
+  .topsearch::placeholder { color: var(--text-3); }
+  .iconbtn { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-2); color: var(--text-2); cursor: pointer; }
+  .iconbtn:hover { background: var(--hover); color: var(--text-1); border-color: var(--line-2); }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<rect width="100" height="100" fill="#0a110d"/>
+<circle cx="50" cy="50" r="34" fill="none" stroke="#1fa94f" stroke-width="4"/>
+<path d="M50 32 C40 40 40 56 50 66 C60 56 60 40 50 32 Z" fill="#1fa94f"/>
+<circle cx="50" cy="28" r="5" fill="#1fa94f"/>
+</svg>
+</template>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.js"></script>
+<script src="logos.js"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="ui.jsx"></script>
+<script type="text/babel" src="map.jsx"></script>
+<script type="text/babel" src="views1.jsx"></script>
+<script type="text/babel" src="views2.jsx"></script>
+<script type="text/babel" src="views3.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
